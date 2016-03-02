@@ -1,3 +1,7 @@
+/*
+This .cpp file contains some general operators for the Data
+*/
+
 #include "Data.h"
 
 Data data;
