@@ -68,15 +68,26 @@ double CalH(int *psivector)
 		}
 	}
 	
-	int CountSum = CountMZ + CountMP + CountZP + CountZM + CountPM+ CountPZ;
+	int CountSum = CountMZ + CountMP + CountZP + CountZM + CountPM + CountPZ;
+	double LOGCountMZ = (CountMZ==0) ? 0:(log(CountMZ));//if Count = 0, then set its log to 0, otherwise use its log value
+	double LOGCountMP = (CountMP==0) ? 0:(log(CountMP));//if Count = 0, then set its log to 0, otherwise use its log value
+	double LOGCountZP = (CountZP==0) ? 0:(log(CountZP));//if Count = 0, then set its log to 0, otherwise use its log value
+	double LOGCountZM = (CountZM==0) ? 0:(log(CountZM));//if Count = 0, then set its log to 0, otherwise use its log value
+	double LOGCountPM = (CountPM==0) ? 0:(log(CountPM));//if Count = 0, then set its log to 0, otherwise use its log value
+	double LOGCountPZ = (CountPZ==0) ? 0:(log(CountPZ));//if Count = 0, then set its log to 0, otherwise use its log value
 	//check if CountSum is 0. If so, epsilon is big enough, stop and return
 	//if not 0, calculate H value
-	H = (CountSum == 0) ? 0 : -((CountMZ/CountSum) * (log(CountMZ)/log(6)) - (CountMP/CountSum) * (log(CountMP)/log(6)) - (CountZP/CountSum) * (log(CountZP)/log(6))
-		- (CountZM/CountSum) * (log(CountZM)/log(6)) - (CountPM/CountSum) * (log(CountPM)/log(6)) - (CountPZ/CountSum) * (log(CountPZ)/log(6)));
+	H = (CountSum == 0) ? 0 : -((CountMZ/CountSum) * (LOGCountMZ/log(6)) - ((double)(CountMP)/(double)CountSum) * (LOGCountMP/log(6)) - ((double)CountZP/(double)CountSum) * (LOGCountZP/log(6))
+		- ((double)CountZM/(double)CountSum) * (LOGCountZM/log(6)) - ((double)CountPM/(double)CountSum) * (LOGCountPM/log(6)) - ((double)CountPZ/(double)CountSum) * (LOGCountPZ/log(6)));
 	
-	//sth wrong here about the H calculation function
+	/*cout<<CountMZ <<" "<< LOGCountMZ<< " "<<log(6) <<" "<< LOGCountMZ/log(6)<<endl;
+	cout<<CountMP <<" "<< LOGCountMP<< " "<<log(6) <<" "<< LOGCountMP/log(6)<<endl;
+	cout<<CountZP <<" "<< LOGCountZP<< " "<<log(6) <<" "<< LOGCountZP/log(6)<<endl;
+	cout<<CountZM <<" "<< LOGCountZM<< " "<<log(6) <<" "<< LOGCountZM/log(6)<<endl;
+	cout<<CountPM <<" "<< LOGCountPM<< " "<<log(6) <<" "<< LOGCountPM/log(6)<<endl;
+	cout<<CountPZ <<" "<< LOGCountPZ<< " "<<log(6) <<" "<< LOGCountPZ/log(6)<<endl;
 	cout<<CountSum<<" "<<H<<endl;
-	getchar();
+	getchar();*/
 
 	return H;
 }
@@ -134,10 +145,10 @@ double CalM(int *psivector)
 	}
 
 	//Now, the norepeat_psi_vector should contains the psi without zero and repeated bits.
-
+	
 	//calculate M:
 	double M=0;
-	M = no_repeat_counter/(data.NumSample-1);
+	M = (double)no_repeat_counter/(double)(data.NumSample-1);
 
 	delete []nonzero_psi_vector;
 	delete []norepeat_psi_vector;
@@ -202,15 +213,18 @@ double FindEpsilon_05(double *MVector, double epsilon_step)
 	if (PositionEpsilon_05 == 0)
 		Epsilon_05 = 0;
 	else
+	{
 		Epsilon_05 = data.EpsilonMin + epsilon_step * (PositionEpsilon_05-1);
+		Epsilon_05 = log10(Epsilon_05);
+	}
 
-	Epsilon_05 = log10(Epsilon_05);
+	//Epsilon_05 = log10(Epsilon_05);
 
 	return Epsilon_05;
 }
 
 //Given a function and a sample sequence, this function calculate the 4 low level features based on information contents
-void Info_Content_Cal::Info_Con_Process()
+void Info_Content_Cal::Info_Con_Process(int funcnum)
 {
 	//Divided the Epsilon range into data.NumEpsilon pieces
 	double LogEpsilonMin = log10(data.EpsilonMin); //log base of 10 of Epsilon max
@@ -259,10 +273,6 @@ void Info_Content_Cal::Info_Con_Process()
 			cout<<"Epsilon Big Enough! All 0 in Psi Vector."<<endl;
 			cout<<"Current epsilon: "<<LogEpsilon<<" "<<Epsilon<<endl;
 			double BreakEpsilon = Epsilon;
-			for (int i=0;i<EpsilonCount;i++)
-			{
-				cout<<HVector[i]<<" ";
-			}
 			break;
 		}
 		M = CalM(PsiVector);
@@ -282,10 +292,16 @@ void Info_Content_Cal::Info_Con_Process()
 	double M0 = MVector[0];
 	double Epsilon_05 = FindEpsilon_05(MVector, EpsilonStep);
 
-	cout<<"Hmax: "<<Hmax<<endl;
+	/*cout<<"Hmax: "<<Hmax<<endl;
 	cout<<"Epsilon_s: "<<Epsilon_s<<endl;
 	cout<<"M0 : "<<M0<<endl;
-	cout<<"Epsilon_05: "<<Epsilon_05<<endl;
+	cout<<"Epsilon_05: "<<Epsilon_05<<endl;*/
+
+	//record the four features.
+	data.HMaxVector[funcnum] = Hmax;
+	data.Epsilon_sVector[funcnum] = Epsilon_s;
+	data.M0Vector[funcnum] = M0;
+	data.Epsilon_05Vector[funcnum] = Epsilon_05;
 
 	delete []PsiVector;
 	delete []HVector;
