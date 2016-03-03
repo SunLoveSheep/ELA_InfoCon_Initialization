@@ -1,3 +1,7 @@
+/*
+This is the function that given a sample sequence, iterate
+*/
+
 #include "Info_Content_Cal.h"
 #include "Data.h"
 #include <iostream>
