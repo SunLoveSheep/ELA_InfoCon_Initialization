@@ -1,3 +1,8 @@
+/*
+This file output results to .csv files. 
+It will output to two .csv files, one contains the HMax, Epsilon_s, M0, and Epsilon_0.5 data of all functions
+The other contains the H and M values for all epsilon values and all functions, in order to plot curves.
+*/
 #include <iostream>
 #include <fstream>
 #include "Output.h"
