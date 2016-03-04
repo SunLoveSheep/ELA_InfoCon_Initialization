@@ -263,9 +263,9 @@ void Info_Content_Cal::Info_Con_Process(int funcnum)
 	EpsilonCount++;
 
 	//Then for epsilon values among all Epsilon values:
-	while (LogEpsilon<LogEpsilonMax)
+	//while (LogEpsilon<LogEpsilonMax)
+	while (EpsilonCount < data.NumEpsilon+1)//need to use this loop otherwise it may exceed the array length
 	{
-	//{
 		//read sample sequence and calculate 1-,0,1 sequence
 		Epsilon = pow(10, LogEpsilon);
 		CalPsiVector(PsiVector,Epsilon);
@@ -287,7 +287,6 @@ void Info_Content_Cal::Info_Con_Process(int funcnum)
 
 		LogEpsilon += EpsilonStep;
 		EpsilonCount++;
-	//}
 	}
 
 	//From the H_vector and M_vector, conclude the values for the 4 low level features.
