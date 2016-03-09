@@ -1,0 +1,29 @@
+/*
+This file is a R project, reading the results of ELA with 4 feature values and classify the functions into preset categories.
+A Neural Network will be trained to predict the categorization of functions.
+The ELA data is stored in .csv file. The data import steps are obmitted here which can be easily done with RStudio
+The ELA data from BBOB'09 benchmark function set is with the name: FourFeaturesData.csv
+*/
+
+library(neuralnet)
+#set the category of 24 functions from BBOB'09:
+FType <- c(1,2,1,1,3,2,1,1,2,3,3,1,1,1,1,2,1,1,2,1,2,1,2,1)
+
+#combine the ELA 4 features results with the function categories and set the name of each column:
+FeatureData_Type <- cbind(FourFeaturesData, FType)
+colnames(FeatureData_Type) <- c("hmax","ep_s","M0","ep_05","Type")
+
+#To use Neural Network for classification, first we build the training and testing sets of data.
+#Currently using the first 20 functions as training set and last 4 functions as testing set. Need to change to randome manner later
+ELAtrainingset = FeatureData_Type[1:20,]
+ELAtestingset = FeatureData_Type[21:24,]
+
+#transform the type into binary coding:
+ELAtrainingmatrix <- model.matrix(~.,data=ELAtrainingset)
+ELAtestinggmatrix <- model.matrix(~.,data=ELAtestingset)
+
+#build NN:
+ELAnn <- neuralnet(FType2+FType3 ~ hmax + ep_s + M0 + ep_05, data = ELAtraingingmatrix, lifesign = "full", hidden = 15, err.fct = "ce", linear.output = FALSE)
+
+
+
