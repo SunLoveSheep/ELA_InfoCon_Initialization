@@ -18,7 +18,7 @@ colnames(FeatureData_Type) <- c("hmax","ep_s","M0","ep_05","Type")
 ELAtrainingset = FeatureData_Type[1:20,]
 ELAtestingset = FeatureData_Type[21:24,]
 
-#transform the type into binary coding:
+#transform the type into binary coding by design matrix:
 ELAtrainingmatrix <- model.matrix(~.,data=ELAtrainingset)
 ELAtestinggmatrix <- model.matrix(~.,data=ELAtestingset)
 
